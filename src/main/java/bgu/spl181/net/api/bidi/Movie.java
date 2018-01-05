@@ -3,7 +3,6 @@ package bgu.spl181.net.api.bidi;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 //I am snir
 public class Movie {
     protected Integer id;
