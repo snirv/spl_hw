@@ -1,10 +1,13 @@
 package bgu.spl181.net.srv;
 
 import bgu.spl181.net.api.MessageEncoderDecoder;
+import bgu.spl181.net.api.bidi.Connections;
+import bgu.spl181.net.api.bidi.ConnectionsImpl;
 import bgu.spl181.net.api.bidi.bidiMessagingProtocol;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 public abstract class BaseServer<T> implements Server<T> {
@@ -13,6 +16,9 @@ public abstract class BaseServer<T> implements Server<T> {
     private final Supplier<bidiMessagingProtocol<T>> protocolFactory;
     private final Supplier<MessageEncoderDecoder<T>> encdecFactory;
     private ServerSocket sock;
+    private Connections<T> connections;
+    private AtomicInteger counter = new AtomicInteger(0);
+
 
     public BaseServer(
             int port,
@@ -23,6 +29,7 @@ public abstract class BaseServer<T> implements Server<T> {
         this.protocolFactory = protocolFactory;
         this.encdecFactory = encdecFactory;
 		this.sock = null;
+		this.connections = new ConnectionsImpl<>();
     }
 
     @Override
@@ -36,12 +43,14 @@ public abstract class BaseServer<T> implements Server<T> {
             while (!Thread.currentThread().isInterrupted()) {
 
                 Socket clientSock = serverSock.accept();
-
+                        bidiMessagingProtocol protocol = protocolFactory.get();
+                        protocol.start(counter.incrementAndGet(),connections);
                 BlockingConnectionHandler<T> handler = new BlockingConnectionHandler<>(
                         clientSock,
                         encdecFactory.get(),
-                        protocolFactory.get());
+                        protocol);
 
+                ((ConnectionsImpl<T>)connections).getClients().put(counter.intValue(),handler);
                 execute(handler);
             }
         } catch (IOException ex) {

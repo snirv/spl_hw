@@ -18,6 +18,7 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
     private BufferedOutputStream out;
     private volatile boolean connected = true;
 
+
     public BlockingConnectionHandler(Socket sock, MessageEncoderDecoder<T> reader, bidiMessagingProtocol<T> protocol) {
         this.sock = sock;
         this.encdec = reader;
@@ -36,17 +37,10 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
                 T nextMessage = encdec.decodeNextByte((byte) read);
                 if (nextMessage != null) {
                     protocol.process(nextMessage);
-                   /* T response = protocol.process(nextMessage);
-                    if (response != null) {
-                        out.write(encdec.encode(response));
-                        out.flush();
-                    }
-                }*/
                 }
             }
 
         } catch (IOException ex) {
-            ex.printStackTrace();
         }
 
     }
@@ -59,6 +53,12 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
 
     @Override
     public void send(T msg) {
-
+        try {
+            if (msg != null) {
+                out.write(encdec.encode(msg));
+                out.flush();
+            }
+        } catch (IOException ex) {
+        }
     }
 }

@@ -33,4 +33,9 @@ public class ConnectionsImpl<T> implements Connections<T> {
     public void disconnect(int connectionId) {
         clients.remove(connectionId);
     }
+
+
+    public ConcurrentHashMap<Integer,ConnectionHandler<T>> getClients(){
+        return clients;
+        }
 }

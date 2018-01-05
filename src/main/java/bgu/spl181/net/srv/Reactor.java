@@ -1,6 +1,8 @@
 package bgu.spl181.net.srv;
 
 import bgu.spl181.net.api.MessageEncoderDecoder;
+import bgu.spl181.net.api.bidi.Connections;
+import bgu.spl181.net.api.bidi.ConnectionsImpl;
 import bgu.spl181.net.api.bidi.bidiMessagingProtocol;
 
 import java.io.IOException;
@@ -11,6 +13,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 public class Reactor<T> implements Server<T> {
@@ -20,7 +23,8 @@ public class Reactor<T> implements Server<T> {
     private final Supplier<MessageEncoderDecoder<T>> readerFactory;
     private final ActorThreadPool pool;
     private Selector selector;
-
+    private Connections<T> connections;
+    private AtomicInteger counter = new AtomicInteger(0);
     private Thread selectorThread;
     private final ConcurrentLinkedQueue<Runnable> selectorTasks = new ConcurrentLinkedQueue<>();
 
@@ -34,6 +38,7 @@ public class Reactor<T> implements Server<T> {
         this.port = port;
         this.protocolFactory = protocolFactory;
         this.readerFactory = readerFactory;
+        this.connections = new ConnectionsImpl<>();
     }
 
     @Override
@@ -96,11 +101,14 @@ public class Reactor<T> implements Server<T> {
     private void handleAccept(ServerSocketChannel serverChan, Selector selector) throws IOException {
         SocketChannel clientChan = serverChan.accept();
         clientChan.configureBlocking(false);
+        bidiMessagingProtocol protocol = protocolFactory.get();
+        protocol.start(counter.incrementAndGet(),connections);
         final NonBlockingConnectionHandler handler = new NonBlockingConnectionHandler(
                 readerFactory.get(),
-                protocolFactory.get(),
+                protocol,
                 clientChan,
                 this);
+        ((ConnectionsImpl<T>)connections).getClients().put(counter.intValue(),handler);
         clientChan.register(selector, SelectionKey.OP_READ, handler);
     }
 

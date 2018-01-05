@@ -11,7 +11,7 @@ package bgu.spl181.net.api.bidi;
  * This interface replaces the MessagingProtocol interface.
  * It exists to support peer to peer messaging via the Connections interface
  */
-public interface bidiMessagingProtocol<T>  extends MessagingProtocol {
+public interface bidiMessagingProtocol<T> {
 
     void start(int connectionId, Connections<T> connections);
 
