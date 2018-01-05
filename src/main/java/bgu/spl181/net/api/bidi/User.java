@@ -1,7 +1,7 @@
 package bgu.spl181.net.api.bidi;
 
 public abstract class User {
-
+    //I am sharon
     protected String userName;
     protected String password;
     protected String type;
