@@ -2,6 +2,7 @@ package bgu.spl181.net.api.bidi;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MovieSharedData extends SharedData{
@@ -63,15 +64,14 @@ public class MovieSharedData extends SharedData{
     }
 
     protected String commandRequestMovieRent(Integer connectionId ,String movieName) {
-        Movie move;
-        for (Movie movie : movieList) {
-            if (movie.getName().equals(movieName)) {
-
-            }
-
+        Movie movie = null;
+        Optional<Movie> movieOptional = movieList.stream().filter((m)-> m.getName().equals(movieName)).findAny();
+        if(movieOptional.isPresent()){
+            movie = movieOptional.get();
         }
-        return null;
-
+        if (movie == null) {
+            return "ERROR request rent failed";
+        }
     }
 
     protected String commandRequestReturnMovie(Integer connectionId, String movieName) {
