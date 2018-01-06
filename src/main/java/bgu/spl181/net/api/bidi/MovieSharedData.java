@@ -65,13 +65,20 @@ public class MovieSharedData extends SharedData{
 
     protected String commandRequestMovieRent(Integer connectionId ,String movieName) {
         Movie movie = null;
+        UserMovieRental user = (UserMovieRental) mapOfLoggedInUsersByConnectedIds.get(connectionId);
         Optional<Movie> movieOptional = movieList.stream().filter((m)-> m.getName().equals(movieName)).findAny();
         if(movieOptional.isPresent()){
             movie = movieOptional.get();
         }
-        if (movie == null) {
+        if (movie == null || movie.bannedCountries.contains(user.getCountry()) ||
+                user.getMoviesList().contains(movieName) ||
+                user.getBalance() < movie.getPrice()) {
             return "ERROR request rent failed";
         }
+        if(movie.getAvailableAmount().equals(0)) {//TODO what if more then one is renting? need to lock the movie
+            return "ERROR request rent failed";
+        }
+        return null;
     }
 
     protected String commandRequestReturnMovie(Integer connectionId, String movieName) {
