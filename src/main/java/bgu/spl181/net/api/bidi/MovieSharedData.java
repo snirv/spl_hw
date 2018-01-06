@@ -3,6 +3,7 @@ package bgu.spl181.net.api.bidi;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MovieSharedData extends SharedData{
@@ -30,7 +31,7 @@ public class MovieSharedData extends SharedData{
         }else {return false;}
     }
 
-    protected String commandRequestBalanceInfo(Integer connectionId) {
+    protected String commandRequestBalanceInfo(Integer connectionId) {//TODO need to check if looged in??
         UserMovieRental user = (UserMovieRental)mapOfLoggedInUsersByConnectedIds.get(connectionId);
         int userBalance = user.getBalance();
         return "ACK balance " + userBalance;
@@ -64,53 +65,102 @@ public class MovieSharedData extends SharedData{
     }
 
     protected String commandRequestMovieRent(Integer connectionId ,String movieName) {
-        Movie movie = null;
         UserMovieRental user = (UserMovieRental) mapOfLoggedInUsersByConnectedIds.get(connectionId);
-        Optional<Movie> movieOptional = movieList.stream().filter((m)-> m.getName().equals(movieName)).findAny();
-        if(movieOptional.isPresent()){
-            movie = movieOptional.get();
-        }
+        Movie movie = getMovieFromListByMovieName(movieName);
         if (movie == null || movie.bannedCountries.contains(user.getCountry()) ||
-                user.getMoviesList().contains(movieName) ||
+                user.isRentingMovie(movieName) ||
                 user.getBalance() < movie.getPrice()) {
             return "ERROR request rent failed";
         }
-        if(movie.getAvailableAmount().equals(0)) {//TODO what if more then one is renting? need to lock the movie
-            return "ERROR request rent failed";
-        }
-        return null;
+        while(!movie.lock.compareAndSet(false,true));//TODO maybe synch
+            if (movie.getAvailableAmount().equals(0)){//TODO what if more then one is renting? need to lock the movie
+                return "ERROR request rent failed";
+            }else{
+                user.getMoviesList().add(movie);
+                user.setBalance(user.getBalance() - movie.getPrice());
+                movie.setAvailableAmount(movie.getAvailableAmount().get() - 1);
+                movie.lock.set(false);
+                //TODO send a broadcast
+                return "ACK rent "+ movieName + " success";
+            }
     }
 
     protected String commandRequestReturnMovie(Integer connectionId, String movieName) {
-    return null;
-
+        UserMovieRental user = (UserMovieRental) mapOfLoggedInUsersByConnectedIds.get(connectionId);
+        Movie movie = getMovieFromListByMovieName(movieName);
+        if(movie == null || !user.isRentingMovie(movieName)){
+            return "ERROR request return failed";
+        }
+        else {
+            user.getMoviesList().remove(movie);
+            movie.getAvailableAmount().incrementAndGet();
+            return "ACK return "+ movieName +" success";//TODO send a broadcast
+        }
     }
 
 
     protected String commandRequestAdminAddMovie(Integer connectionId, String movieName , int amount , int price , List<String> bannedCountry) {
-        return null;
-
-
+        UserMovieRental user = (UserMovieRental) mapOfLoggedInUsersByConnectedIds.get(connectionId);
+        Movie movie = getMovieFromListByMovieName(movieName);
+        if( !user.isAdmin() || amount <= 0 || price <= 0 || movie != null){
+            return "ERROR request addmovie failed";
+        }else {
+            int id =1;
+            OptionalInt optionalId = movieList.stream()
+                    .mapToInt(m -> m.getId())
+                    .max();
+            if(optionalId.isPresent()){id = optionalId.getAsInt();}
+            Movie movieToAdd = new Movie(id + 1 ,movieName,price,bannedCountry,amount);
+            movieList.add(movieToAdd);
+            return "ACK addmovie " +movieName +" success";//TODO add a broadcast
+        }
     }
 
     protected String commandRequestAdminRemmovie(Integer connectionId,String movieName) {
-        return null;
-
+        UserMovieRental user = (UserMovieRental) mapOfLoggedInUsersByConnectedIds.get(connectionId);
+        Movie movie = getMovieFromListByMovieName(movieName);
+        if (movie == null || !user.isAdmin() ){return "ERROR request remmovie failed";}
+        while (!movie.lock.compareAndSet(false,true));
+        if(movie.getAvailableAmount() != movie.getTotalAmount()){
+            return "ERROR request remmovie failed";
+        }
+        movieList.remove(movie);
+        movie.lock.set(false);
+        return "ACK remmovie " +movieName +" success";//TODO add a broadcast
     }
 
     protected String commandRequestAdminChangePrice(Integer connectionId , String movieName , int price) {
-        return null;
-
-
+        UserMovieRental user = (UserMovieRental) mapOfLoggedInUsersByConnectedIds.get(connectionId);
+        Movie movie = getMovieFromListByMovieName(movieName);
+        if (movie == null || !user.isAdmin() || price <= 0){return "ERROR request remmovie failed";}
+        while (!movie.lock.compareAndSet(false,true));
+        movie.setPrice(price);
+        movie.lock.set(false);
+        return "ACK changeprice " +movieName +" success";//TODO add a broadcast
     }
 
     @Override
     protected boolean isValidDataBlock(String dataBlock) {
-        return false;
+        String[] msg = dataBlock.split("=");
+        if(msg.length < 2){return false;}
+        else {return true;}
     }
 
     @Override
-    protected void addUser(String username, String password) {
+    protected void addUser(String username , String password, int connectionId, String dataBlock) {
+        String[] msg = dataBlock.split("=");
+        String country = msg[1];
+        UserMovieRental userToAdd = new UserMovieRental(username, password, "normal" , connectionId , country, 0 , new LinkedList<>());
+        mapOfRegisteredUsersByUsername.put(username,userToAdd);
 
+    }
+
+    private Movie getMovieFromListByMovieName(String movieName){
+        Optional<Movie> movieOptional = movieList.stream().filter((m)-> m.getName().equals(movieName)).findAny();
+        if(movieOptional.isPresent()) {
+            return movieOptional.get();
+        }else {
+            return null;
+        }
     }
 }

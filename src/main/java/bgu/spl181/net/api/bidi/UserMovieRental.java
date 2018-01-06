@@ -2,14 +2,15 @@ package bgu.spl181.net.api.bidi;
 
 
 import java.util.List;
+import java.util.Optional;
 
 public class UserMovieRental extends User{
 
     private String country;
     private int balance;
-    private List<Integer> moviesList;
+    private List<Movie> moviesList;
 
-    public UserMovieRental(String userName, String password, String type , int connectionId, String country, int balance, List<Integer> moviesList) { //TODO connection id where to initiate
+    public UserMovieRental(String userName, String password, String type , int connectionId, String country, int balance, List<Movie> moviesList) { //TODO connection id where to initiate
         super(userName, password, type , connectionId);
         this.country = country;
         this.balance = balance;
@@ -32,11 +33,11 @@ public class UserMovieRental extends User{
         this.balance = balance;
     }
 
-    public List<Integer> getMoviesList() {
+    public List<Movie> getMoviesList() {
         return moviesList;
     }
 
-    public void setMoviesList(List<Integer> moviesList) {
+    public void setMoviesList(List<Movie> moviesList) {
         this.moviesList = moviesList;
     }
 
@@ -50,5 +51,15 @@ public class UserMovieRental extends User{
             return true;
         }else {
             return false;}
+    }
+
+    public boolean isRentingMovie(String movieName){
+        Optional<Movie> movieOptional = moviesList.stream().filter((m)-> m.getName().equals(movieName)).findAny();
+        if(movieOptional.isPresent()){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

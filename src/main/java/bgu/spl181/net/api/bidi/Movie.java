@@ -1,6 +1,7 @@
 package bgu.spl181.net.api.bidi;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 //I am snir
@@ -11,14 +12,16 @@ public class Movie {
     protected List<String> bannedCountries;
     protected AtomicInteger availableAmount;
     protected AtomicInteger totalAmount;
+    protected AtomicBoolean lock;
 
-    public Movie(Integer id, String name, Integer price, List<String> bannedCountries, AtomicInteger availableAmount, AtomicInteger totalAmount) {
+    public Movie(Integer id, String name, Integer price, List<String> bannedCountries, int totalAmount) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.bannedCountries = bannedCountries;
-        this.availableAmount = availableAmount;
-        this.totalAmount = totalAmount;
+        this.availableAmount.set(totalAmount);
+        this.totalAmount.set(totalAmount);
+        this.lock.set(false);
     }
 
     @Override
@@ -66,8 +69,8 @@ public class Movie {
         return availableAmount;
     }
 
-    public void setAvailableAmount(AtomicInteger availableAmount) {
-        this.availableAmount = availableAmount;
+    public void setAvailableAmount(int availableAmount) {
+        this.availableAmount.set( availableAmount);
     }
 
     public AtomicInteger getTotalAmount() {

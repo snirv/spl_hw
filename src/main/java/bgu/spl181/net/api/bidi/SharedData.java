@@ -19,7 +19,7 @@ public abstract class SharedData {
                 !isValidDataBlock(dataBlock)  ){
             return "ERROR registration failed";
         }
-        addUser(username,password);
+        addUser(username,password,connectionId, dataBlock);
         return "ACK registration succeeded";
 
     }
@@ -46,7 +46,7 @@ public abstract class SharedData {
 
     protected abstract boolean isValidDataBlock(String dataBlock);
 
-    protected abstract void addUser(String username , String password );
+    protected abstract void addUser(String username , String password, int connectionId, String dataBlock);
 
     public ConcurrentHashMap<String, User> getUserMap() {
         return mapOfRegisteredUsersByUsername;
