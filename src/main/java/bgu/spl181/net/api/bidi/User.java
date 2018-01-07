@@ -5,6 +5,8 @@ public abstract class User {
     protected String userName;
     protected String password;
     protected String type;
+
+
     protected boolean isLoggedIn;
     protected int connectionId;//TODO check if necessary
 
@@ -39,6 +41,14 @@ public abstract class User {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean isLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        isLoggedIn = loggedIn;
     }
 
 

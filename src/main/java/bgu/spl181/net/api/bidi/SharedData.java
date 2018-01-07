@@ -30,7 +30,8 @@ public abstract class SharedData {
             return "ERROR login failed";
         }
         User user = mapOfRegisteredUsersByUsername.get(username);
-        user.isLoggedIn = true;
+        if(!user.getPassword().equals(password)){ return "ERROR login failed";}
+        user.setLoggedIn(true);
         mapOfLoggedInUsersByConnectedIds.put(connectionId , user);
         return "ACK login succeeded";
     }
@@ -38,7 +39,8 @@ public abstract class SharedData {
         if(!mapOfLoggedInUsersByConnectedIds.contains(connctionId)){
             return "ERROR signout failed";
         }
-        mapOfLoggedInUsersByConnectedIds.remove(connctionId);
+        User user = mapOfLoggedInUsersByConnectedIds.remove(connctionId);
+        user.setLoggedIn(false);
         return "ACK signout succeeded";
 
     }

@@ -46,19 +46,19 @@ public abstract class bidiMessagingProtocolImpl<T> implements bidiMessagingProto
                         }
                         break;
                     case "SIGNOUT":
-                        result= sharedData.commandSignOut(connectionId);
-                        if(result.equals("success")){
+                        result = sharedData.commandSignOut(connectionId);
+                        if(result.equals("ACK signout succeeded")){
                             shouldTerminated=true;
                             connections.disconnect(connectionId);
-                            connections.send(connectionId,(T)"ACK signout succeeded");
+                            connections.send(connectionId,(T)result);
                         }
                         else {
-                            connections.send(connectionId,(T)"ERROR signout failed");
+                            connections.send(connectionId,(T)result);
                         }
                         break;
 
                     case "REQUEST":
-                        String requestArgs= ((String) message).substring(((String) message).indexOf(" ")+1);
+                        String requestArgs = ((String) message).substring(((String) message).indexOf(" ")+1);
                         parseringRequest(requestArgs);
                         break;
 

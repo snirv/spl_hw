@@ -14,15 +14,15 @@ public class MovieRentalProtocol extends bidiMessagingProtocolImpl {
     @Override
     public void parseringRequest(String args) {
         String result;
-        MovieSharedData movieSharedData= (MovieSharedData)sharedData;
+        MovieSharedData movieSharedData = (MovieSharedData)sharedData;
         String[] msg= args.split(" ");
         if (msg.length==0){
             connections.send(connectionId,"ERROR request failed");
+            return;
         } else if(!movieSharedData.isLoggedIn(connectionId)) {
-            if ((!msg[0].equals("balance"))|| (msg[0].equals("balance")&&(!msg[1].equals("add")||!msg[1].equals("info")))) {
+            if ((!msg[0].equals("balance")) || (msg[0].equals("balance")&&(!msg[1].equals("add")||!msg[1].equals("info")))) {
                 connections.send(connectionId, "ERROR request" + msg[0] + "failed");
             } else {
-                //TODO what if msg[1] is null??????????
                 connections.send(connectionId, "ERROR request" + msg[0]+" "+msg[1] + "failed"); }
         }
         else {
@@ -37,23 +37,25 @@ public class MovieRentalProtocol extends bidiMessagingProtocolImpl {
                     if(msg[1].equals("info")){
                         result= movieSharedData.commandRequestBalanceInfo(connectionId);
                         connections.send(connectionId,result);
+
                     }
                     else if (msg[1].equals("add")){
                         result=movieSharedData.commandRequestBalanceAdd(connectionId,Integer.decode(msg[2]));
                         connections.send(connectionId,result);
+
                     }
                     else {
                         connections.send(connectionId,"ERROR request" + msg[0] + "failed");
                     }
                     break;
                 case "info":
-                    if (msg.length==1 || argument.equals("")){
-                        result=movieSharedData.commandRequestMovieInfo(null);
+                    if (msg.length==1 || argument.equals("")){//TODO what if we get an empty string handle """"
+                        result = movieSharedData.commandRequestMovieInfo(null);
                         connections.send(connectionId,result);
                     }
                     else{
 
-                        result=movieSharedData.commandRequestMovieInfo(argument);
+                        result = movieSharedData.commandRequestMovieInfo(argument);
                         connections.send(connectionId,result);
                     }
                     break;

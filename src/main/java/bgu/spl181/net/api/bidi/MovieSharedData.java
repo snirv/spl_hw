@@ -31,7 +31,7 @@ public class MovieSharedData extends SharedData{
         }else {return false;}
     }
 
-    protected String commandRequestBalanceInfo(Integer connectionId) {//TODO need to check if looged in??
+    protected String commandRequestBalanceInfo(Integer connectionId) {
         UserMovieRental user = (UserMovieRental)mapOfLoggedInUsersByConnectedIds.get(connectionId);
         int userBalance = user.getBalance();
         return "ACK balance " + userBalance;
@@ -40,6 +40,7 @@ public class MovieSharedData extends SharedData{
     protected String commandRequestBalanceAdd(Integer connectionId, int amount) {
         UserMovieRental user = (UserMovieRental)mapOfLoggedInUsersByConnectedIds.get(connectionId);
         int newBalance = user.addBalance(amount);
+        user.setBalance(newBalance);
         return  "ACK balance " + newBalance + " added " + amount;
     }
 
@@ -60,7 +61,7 @@ public class MovieSharedData extends SharedData{
                     return "ACK info " + ret ;
                 }
             }
-            return null;
+            return "ERROR request info failed";
         }
     }
 
@@ -73,12 +74,12 @@ public class MovieSharedData extends SharedData{
             return "ERROR request rent failed";
         }
         while(!movie.lock.compareAndSet(false,true));//TODO maybe synch
-            if (movie.getAvailableAmount().equals(0)){//TODO what if more then one is renting? need to lock the movie
+            if (movie.getAvailableAmount().get() == 0){//TODO what if more then one is renting? need to lock the movie
                 return "ERROR request rent failed";
             }else{
                 user.getMoviesList().add(movie);
                 user.setBalance(user.getBalance() - movie.getPrice());
-                movie.setAvailableAmount(movie.getAvailableAmount().get() - 1);
+                movie.getAvailableAmount().decrementAndGet();
                 movie.lock.set(false);
                 //TODO send a broadcast
                 return "ACK rent "+ movieName + " success";
@@ -105,7 +106,7 @@ public class MovieSharedData extends SharedData{
         if( !user.isAdmin() || amount <= 0 || price <= 0 || movie != null){
             return "ERROR request addmovie failed";
         }else {
-            int id =1;
+            int id = 0;
             OptionalInt optionalId = movieList.stream()
                     .mapToInt(m -> m.getId())
                     .max();
