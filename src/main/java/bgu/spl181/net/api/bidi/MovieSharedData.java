@@ -156,12 +156,13 @@ public class MovieSharedData extends SharedData{
 
     }
 
-    private Movie getMovieFromListByMovieName(String movieName){
-        Optional<Movie> movieOptional = movieList.stream().filter((m)-> m.getName().equals(movieName)).findAny();
-        if(movieOptional.isPresent()) {
+    private Movie getMovieFromListByMovieName(String movieName) {
+        Optional<Movie> movieOptional = movieList.stream().filter((m) -> m.getName().equals(movieName)).findAny();
+        if (movieOptional.isPresent()) {
             return movieOptional.get();
-        }else {
+        } else {
             return null;
         }
     }
+
 }

@@ -1,7 +1,9 @@
 package bgu.spl181.net.api.bidi;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MovieRentalProtocol extends bidiMessagingProtocolImpl {
 
@@ -117,5 +119,14 @@ public class MovieRentalProtocol extends bidiMessagingProtocolImpl {
         }
 
 
+    }
+
+    public void broadcast(String msg){
+          ConcurrentHashMap<Integer, User>  map = sharedData.getMapOfLoggedInUsersByConnectedIds();
+        MovieSharedData sharedData
+        for (ConcurrentHashMap.Entry<Integer, User> entry : map.entrySet()){
+            UserMovieRental user = (UserMovieRental)entry.getValue();
+             user.connectionId
+        }
     }
 }

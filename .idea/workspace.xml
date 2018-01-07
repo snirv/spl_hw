@@ -4,9 +4,6 @@
     <list default="true" id="ab70c019-d5d5-43ee-a2f8-683bbd57b31c" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/MovieRentalProtocol.java" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/MovieRentalProtocol.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/MovieSharedData.java" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/MovieSharedData.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/SharedData.java" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/SharedData.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/User.java" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/User.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/bidiMessagingProtocolImpl.java" afterPath="$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/bidiMessagingProtocolImpl.java" />
     </list>
     <ignored path="spl-net.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,11 +25,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MovieSharedData.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MovieSharedData.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/MovieSharedData.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="19">
-              <caret line="127" column="30" selection-start-line="127" selection-start-column="30" selection-end-line="127" selection-end-column="30" />
+            <state relative-caret-position="537">
+              <caret line="166" column="0" selection-start-line="166" selection-start-column="0" selection-end-line="166" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -73,15 +70,15 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MovieRentalProtocol.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MovieRentalProtocol.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/MovieRentalProtocol.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-177">
-              <caret line="80" column="24" selection-start-line="80" selection-start-column="24" selection-end-line="80" selection-end-column="24" />
+            <state relative-caret-position="526">
+              <caret line="125" column="33" selection-start-line="125" selection-start-column="33" selection-end-line="125" selection-end-column="33" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#222#223#0" expanded="true" />
-                <element signature="e#260#261#0" expanded="true" />
+                <element signature="e#295#296#0" expanded="true" />
+                <element signature="e#333#334#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -140,8 +137,8 @@
         <option value="$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/User.java" />
         <option value="$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/SharedData.java" />
         <option value="$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/bidiMessagingProtocolImpl.java" />
-        <option value="$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/MovieRentalProtocol.java" />
         <option value="$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/MovieSharedData.java" />
+        <option value="$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/MovieRentalProtocol.java" />
       </list>
     </option>
   </component>
@@ -629,12 +626,12 @@
       <updated>1515236924816</updated>
       <workItem from="1515236926368" duration="2299000" />
       <workItem from="1515254036675" duration="7427000" />
-      <workItem from="1515266213645" duration="6404000" />
+      <workItem from="1515266213645" duration="7868000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="16130000" />
+    <option name="totallyTimeSpent" value="17594000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
@@ -765,8 +762,8 @@
           <caret line="14" column="8" selection-start-line="14" selection-start-column="8" selection-end-line="14" selection-end-column="38" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#222#223#0" expanded="true" />
-            <element signature="e#260#261#0" expanded="true" />
+            <element signature="e#295#296#0" expanded="true" />
+            <element signature="e#333#334#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -924,24 +921,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/MovieRentalProtocol.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/MovieSharedData.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-177">
-          <caret line="80" column="24" selection-start-line="80" selection-start-column="24" selection-end-line="80" selection-end-column="24" />
+        <state relative-caret-position="537">
+          <caret line="166" column="0" selection-start-line="166" selection-start-column="0" selection-end-line="166" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#222#223#0" expanded="true" />
-            <element signature="e#260#261#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/MovieSharedData.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/bgu/spl181/net/api/bidi/MovieRentalProtocol.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19">
-          <caret line="127" column="30" selection-start-line="127" selection-start-column="30" selection-end-line="127" selection-end-column="30" />
+        <state relative-caret-position="526">
+          <caret line="125" column="33" selection-start-line="125" selection-start-column="33" selection-end-line="125" selection-end-column="33" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#295#296#0" expanded="true" />
+            <element signature="e#333#334#0" expanded="true" />
           </folding>
         </state>
       </provider>
