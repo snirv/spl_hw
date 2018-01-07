@@ -64,10 +64,18 @@ public class MovieRentalProtocol extends bidiMessagingProtocolImpl {
                 case  "rent":
                     result=movieSharedData.commandRequestMovieRent(connectionId,argument);
                     connections.send(connectionId,result);
+                    if (result.substring(0,3).equals("ACK")){
+                        String broadcastResult= movieSharedData.commandRequestRentBroad(argument);//TODO
+                        broadcast(broadcastResult);
+                    }
                     break;
                 case "return":
                     result= movieSharedData.commandRequestReturnMovie(connectionId,argument);
                     connections.send(connectionId,result);
+                    if (result.substring(0,3).equals("ACK")){
+                        String broadcastResult= movieSharedData.commandRequestReturnBroad(argument);//TODO
+                        broadcast(broadcastResult);
+                    }
                     break;
                 case "addmovie":
                     String movieName= msg[1];
@@ -85,6 +93,10 @@ public class MovieRentalProtocol extends bidiMessagingProtocolImpl {
                     if (i== msg.length-1){
                         result=movieSharedData.commandRequestAdminAddMovie(connectionId,movieName,amount,price,null);
                         connections.send(connectionId,result);
+                        if (result.substring(0,3).equals("ACK")){
+                            String broadcastResult= movieSharedData.commandRequestAdminAddBroad(movieName);//TODO
+                            broadcast(broadcastResult);
+                        }
                         break;
                     }
                     else{
@@ -100,17 +112,29 @@ public class MovieRentalProtocol extends bidiMessagingProtocolImpl {
                         }
                         result=movieSharedData.commandRequestAdminAddMovie(connectionId,movieName,amount,price,banned);
                         connections.send(connectionId,result);
+                        if (result.substring(0,3).equals("ACK")){
+                            String broadcastResult= movieSharedData.commandRequestAdminAddBroad(movieName);//TODO
+                            broadcast(broadcastResult);
+                        }
                         break;
                     }
 
                 case "remmovie":
                     result=movieSharedData.commandRequestAdminRemmovie(connectionId,argument);
                     connections.send(connectionId,result);
+                    if (result.substring(0,3).equals("ACK")){
+                        String broadcastResult= movieSharedData.commandRequestAdminRemoveBroad(argument);//TODO
+                        broadcast(broadcastResult);
+                    }
                     break;
                 case "changeprice":
                     int split= argument.lastIndexOf(" ");
                     result=movieSharedData.commandRequestAdminChangePrice(connectionId,argument.substring(0,split),Integer.decode(argument.substring(split+1)));
                     connections.send(connectionId,result);
+                    if (result.substring(0,3).equals("ACK")){
+                        String broadcastResult= movieSharedData.commandRequestAdminchangeBroad(argument.substring(0,split));//TODO
+                        broadcast(broadcastResult);
+                    }
                     break;
                 default:
                     connections.send(connectionId,"ERROR request" + msg[0] + "failed");
@@ -123,10 +147,9 @@ public class MovieRentalProtocol extends bidiMessagingProtocolImpl {
 
     public void broadcast(String msg){
           ConcurrentHashMap<Integer, User>  map = sharedData.getMapOfLoggedInUsersByConnectedIds();
-        MovieSharedData sharedData
         for (ConcurrentHashMap.Entry<Integer, User> entry : map.entrySet()){
             UserMovieRental user = (UserMovieRental)entry.getValue();
-             user.connectionId
+             connections.send(user.connectionId,msg);
         }
     }
 }
