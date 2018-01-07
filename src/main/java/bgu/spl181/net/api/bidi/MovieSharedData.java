@@ -74,16 +74,16 @@ public class MovieSharedData extends SharedData{
             return "ERROR request rent failed";
         }
         while(!movie.lock.compareAndSet(false,true));//TODO maybe synch
-            if (movie.getAvailableAmount().get() == 0){//TODO what if more then one is renting? need to lock the movie
-                return "ERROR request rent failed";
-            }else{
-                user.getMoviesList().add(movie);
-                user.setBalance(user.getBalance() - movie.getPrice());
-                movie.getAvailableAmount().decrementAndGet();
-                movie.lock.set(false);
-                //TODO send a broadcast
-                return "ACK rent "+ movieName + " success";
-            }
+        if (movie.getAvailableAmount().get() == 0){//TODO what if more then one is renting? need to lock the movie
+            return "ERROR request rent failed";
+        }else{
+            user.getMoviesList().add(movie);
+            user.setBalance(user.getBalance() - movie.getPrice());
+            movie.getAvailableAmount().decrementAndGet();
+            movie.lock.set(false);
+            //TODO send a broadcast
+            return "ACK rent "+ movieName + " success";
+        }
     }
 
     protected String commandRequestReturnMovie(Integer connectionId, String movieName) {
@@ -165,4 +165,13 @@ public class MovieSharedData extends SharedData{
         }
     }
 
+    public String commandRequestBroad(String movieName){
+        Movie movie= getMovieFromListByMovieName(movieName);
+        return "BROADCAST movie " +movie.getName() +" "+ movie.getAvailableAmount()+" "+ movie.getPrice();
+    }
+
+    public String commandRequestRemoveBroad(String movieName){
+        Movie movie= getMovieFromListByMovieName(movieName);
+        return "BROADCAST movie " +movie.getName() +"removed";
+    }
 }

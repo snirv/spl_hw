@@ -65,7 +65,7 @@ public class MovieRentalProtocol extends bidiMessagingProtocolImpl {
                     result=movieSharedData.commandRequestMovieRent(connectionId,argument);
                     connections.send(connectionId,result);
                     if (result.substring(0,3).equals("ACK")){
-                        String broadcastResult= movieSharedData.commandRequestRentBroad(argument);//TODO
+                        String broadcastResult= movieSharedData.commandRequestBroad(argument);
                         broadcast(broadcastResult);
                     }
                     break;
@@ -73,7 +73,7 @@ public class MovieRentalProtocol extends bidiMessagingProtocolImpl {
                     result= movieSharedData.commandRequestReturnMovie(connectionId,argument);
                     connections.send(connectionId,result);
                     if (result.substring(0,3).equals("ACK")){
-                        String broadcastResult= movieSharedData.commandRequestReturnBroad(argument);//TODO
+                        String broadcastResult= movieSharedData.commandRequestBroad(argument);
                         broadcast(broadcastResult);
                     }
                     break;
@@ -94,7 +94,7 @@ public class MovieRentalProtocol extends bidiMessagingProtocolImpl {
                         result=movieSharedData.commandRequestAdminAddMovie(connectionId,movieName,amount,price,null);
                         connections.send(connectionId,result);
                         if (result.substring(0,3).equals("ACK")){
-                            String broadcastResult= movieSharedData.commandRequestAdminAddBroad(movieName);//TODO
+                            String broadcastResult= movieSharedData.commandRequestBroad(movieName);//TODO
                             broadcast(broadcastResult);
                         }
                         break;
@@ -113,7 +113,7 @@ public class MovieRentalProtocol extends bidiMessagingProtocolImpl {
                         result=movieSharedData.commandRequestAdminAddMovie(connectionId,movieName,amount,price,banned);
                         connections.send(connectionId,result);
                         if (result.substring(0,3).equals("ACK")){
-                            String broadcastResult= movieSharedData.commandRequestAdminAddBroad(movieName);//TODO
+                            String broadcastResult= movieSharedData.commandRequestBroad(movieName);//TODO
                             broadcast(broadcastResult);
                         }
                         break;
@@ -123,7 +123,7 @@ public class MovieRentalProtocol extends bidiMessagingProtocolImpl {
                     result=movieSharedData.commandRequestAdminRemmovie(connectionId,argument);
                     connections.send(connectionId,result);
                     if (result.substring(0,3).equals("ACK")){
-                        String broadcastResult= movieSharedData.commandRequestAdminRemoveBroad(argument);//TODO
+                        String broadcastResult= movieSharedData.commandRequestRemoveBroad(argument);//TODO
                         broadcast(broadcastResult);
                     }
                     break;
@@ -132,7 +132,7 @@ public class MovieRentalProtocol extends bidiMessagingProtocolImpl {
                     result=movieSharedData.commandRequestAdminChangePrice(connectionId,argument.substring(0,split),Integer.decode(argument.substring(split+1)));
                     connections.send(connectionId,result);
                     if (result.substring(0,3).equals("ACK")){
-                        String broadcastResult= movieSharedData.commandRequestAdminchangeBroad(argument.substring(0,split));//TODO
+                        String broadcastResult= movieSharedData.commandRequestBroad(argument.substring(0,split));//TODO
                         broadcast(broadcastResult);
                     }
                     break;
@@ -146,10 +146,10 @@ public class MovieRentalProtocol extends bidiMessagingProtocolImpl {
     }
 
     public void broadcast(String msg){
-          ConcurrentHashMap<Integer, User>  map = sharedData.getMapOfLoggedInUsersByConnectedIds();
+        ConcurrentHashMap<Integer, User>  map = sharedData.getMapOfLoggedInUsersByConnectedIds();
         for (ConcurrentHashMap.Entry<Integer, User> entry : map.entrySet()){
             UserMovieRental user = (UserMovieRental)entry.getValue();
-             connections.send(user.connectionId,msg);
+            connections.send(user.connectionId,msg);
         }
     }
 }
